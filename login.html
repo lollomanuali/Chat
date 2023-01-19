@@ -1,25 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+
+    </style>
     <meta charset="UTF-8">
     <title>Connetto
     </title>
     <script>
         "use strict";
-
         let ws = new WebSocket("ws://10.1.0.52:8080/serverchat/textChat"); 
+        ws.onmessage = gestoreRicezione;
+        
 
-        function inviaAlServer(){
+        function login(){
             let login = "login|"+document.getElementById("username").value+"|"+document.getElementById("password").value;
             ws.send(login);
             console.log(login);
+            document.getElementById("username").style.display="none";
+            document.getElementById("password").style.display="none";
+            document.getElementById("login1").style.display="none";
+            document.getElementById("tUsername").style.display="none";
+            document.getElementById("tPassword").style.display="none";
+        }
+
+        function inviaAlServer(){
+            let data = new Date();
+            let messaggio = "messaggio|"+data.getHours()+":"+data.getMinutes()+"|"+document.getElementById("username").value+"|"+document.getElementById("msg").value;
+            ws.send(messaggio);
+            console.log(messaggio);
+        }
+
+        function chiudiLaConnessione(){
+            ws.close();  
+        }
+
+        function gestoreRicezione(messaggio){
+            document.getElementById("ricezione").textContent += messaggio.data + "\n";  
         }
         
     </script>
 </head>
 <body>
-    Nome utente:<input id="username" type="text"/>
-    Password:<input id="password" type="text"/>
-    <button onClick="inviaAlServer()">invia!</button>
+    <p id="tUsername">
+        Username:
+    <input id="username" type="text"/>
+    </p>
+    <p id="tPassword">
+        Password:
+    <input id="password" type="text"/>
+    </p>
+    <button id="login1" onClick="login()">Login</button> 
+    <br>Messaggi in arrivo:<textarea id="ricezione" readonly></textarea> 
+    <br>Scrivi un messaggio:<input style="margin-top:30px" id="msg" type="text">
+    <br><button style="margin-top:30px"onClick="inviaAlServer()">invia!</button>
+    <button style="margin-left:30px" style="margin-top:30px" onClick="chiudiLaConnessione()">chiudi</button>
 </body>
 </html>
