@@ -22,11 +22,17 @@
             document.getElementById("login1").style.display="none";
             document.getElementById("tUsername").style.display="none";
             document.getElementById("tPassword").style.display="none";
+            document.getElementById("invio").style.display="block";
+            document.getElementById("chiudi").style.display="block";
+            document.getElementById("ricezione").style.display="block";
+            document.getElementById("msg").style.display="block";
+            document.getElementById("et1").style.display="block";
+            document.getElementById("et2").style.display="block";
         }
 
         function inviaAlServer(){
             let data = new Date();
-            let messaggio = "messaggio|"+data.getHours()+":"+data.getMinutes()+"|"+document.getElementById("username").value+"|"+document.getElementById("msg").value;
+            let messaggio = "msg|"+data.getHours()+":"+data.getMinutes()+"|"+document.getElementById("username").value+"|"+document.getElementById("msg").value;
             ws.send(messaggio);
             console.log(messaggio);
         }
@@ -36,12 +42,28 @@
         }
 
         function gestoreRicezione(messaggio){
-            document.getElementById("ricezione").textContent += messaggio.data + "\n";  
+            let x = messaggio.data.split("|");
+            let y = messaggio.data.split("|");
+            if(x[0]=="msg"){
+                document.getElementById("ricezione").textContent += x[2]+" @ "+x[3] + "\n"; 
+            }else{
+                document.getElementById("ricezione").textContent += messaggio.data + "\n";
+            }
+            //fai il for che scorre il vettore per poi stampare tutti gli utenti connessi
+        }
+        
+        function nascondi(){
+            document.getElementById("invio").style.display="none";
+            document.getElementById("chiudi").style.display="none";
+            document.getElementById("ricezione").style.display="none";
+            document.getElementById("msg").style.display="none";
+            document.getElementById("et1").style.display="none";
+            document.getElementById("et2").style.display="none";
         }
         
     </script>
 </head>
-<body>
+<body onload="nascondi()">
     <p id="tUsername">
         Username:
     <input id="username" type="text"/>
@@ -51,9 +73,9 @@
     <input id="password" type="text"/>
     </p>
     <button id="login1" onClick="login()">Login</button> 
-    <br>Messaggi in arrivo:<textarea id="ricezione" readonly></textarea> 
-    <br>Scrivi un messaggio:<input style="margin-top:30px" id="msg" type="text">
-    <br><button style="margin-top:30px"onClick="inviaAlServer()">invia!</button>
-    <button style="margin-left:30px" style="margin-top:30px" onClick="chiudiLaConnessione()">chiudi</button>
+    <p id="et1">Messaggi in arrivo:</p><textarea id="ricezione" readonly></textarea> 
+    <p id="et2">Scrivi un messaggio:</p><input style="margin-top:30px" id="msg" type="text">
+    <button id="invio" style="margin-top:30px" onClick="inviaAlServer()">invia!</button>
+    <button id="chiudi"  style="margin-top:10px" onClick="chiudiLaConnessione()">chiudi</button>
 </body>
 </html>
