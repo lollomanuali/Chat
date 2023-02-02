@@ -2,7 +2,44 @@
 <html lang="en">
 <head>
     <style>
-
+        body{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #invio{
+            width: 70px;
+            height: 40px;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        #chiudi{
+            width: 70px;
+            height: 40px;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        #ricezione{
+            border-style:double;
+            border-color: red;
+            border-width: 3px;
+            width:400px;
+            height: 400px;
+            overflow: scroll;
+        }
+        #messaggi{
+            border-style:double;
+            border-color: blue;
+            border-width: 3px;
+            width:400px;
+            height: 400px;
+            overflow: scroll;
+            margin-left:450px;
+            position:relative;
+            bottom:410px;
+        }
+        #stile{
+            position:relative;
+            bottom:400px;
+        }
     </style>
     <meta charset="UTF-8">
     <title>Connetto
@@ -16,7 +53,6 @@
         function login(){
             let login = "login|"+document.getElementById("username").value+"|"+document.getElementById("password").value;
             ws.send(login);
-            console.log(login);
             document.getElementById("username").style.display="none";
             document.getElementById("password").style.display="none";
             document.getElementById("login1").style.display="none";
@@ -25,6 +61,7 @@
             document.getElementById("invio").style.display="block";
             document.getElementById("chiudi").style.display="block";
             document.getElementById("ricezione").style.display="block";
+            document.getElementById("messaggi").style.display="block";
             document.getElementById("msg").style.display="block";
             document.getElementById("et1").style.display="block";
             document.getElementById("et2").style.display="block";
@@ -34,7 +71,6 @@
             let data = new Date();
             let messaggio = "msg|"+data.getHours()+":"+data.getMinutes()+"|"+document.getElementById("username").value+"|"+document.getElementById("msg").value;
             ws.send(messaggio);
-            console.log(messaggio);
         }
 
         function chiudiLaConnessione(){
@@ -43,19 +79,21 @@
 
         function gestoreRicezione(messaggio){
             let x = messaggio.data.split("|");
-            let y = messaggio.data.split("|");
             if(x[0]=="msg"){
-                document.getElementById("ricezione").textContent += x[2]+" @ "+x[3] + "\n"; 
-            }else{
-                document.getElementById("ricezione").textContent += messaggio.data + "\n";
+                document.getElementById("messaggi").textContent += x[2]+": "+x[3] +" ("+ x[1]+")"+"\n"; 
             }
-            //fai il for che scorre il vettore per poi stampare tutti gli utenti connessi
-        }
+            if(x[0]=="lista"){
+                x.splice(0,1)
+                document.getElementById("ricezione").textContent += "Utenti connessi: " + x +"\n";
+            } 
+ 
+            }
         
         function nascondi(){
             document.getElementById("invio").style.display="none";
             document.getElementById("chiudi").style.display="none";
             document.getElementById("ricezione").style.display="none";
+            document.getElementById("messaggi").style.display="none";
             document.getElementById("msg").style.display="none";
             document.getElementById("et1").style.display="none";
             document.getElementById("et2").style.display="none";
@@ -72,10 +110,15 @@
         Password:
     <input id="password" type="text"/>
     </p>
-    <button id="login1" onClick="login()">Login</button> 
-    <p id="et1">Messaggi in arrivo:</p><textarea id="ricezione" readonly></textarea> 
-    <p id="et2">Scrivi un messaggio:</p><input style="margin-top:30px" id="msg" type="text">
-    <button id="invio" style="margin-top:30px" onClick="inviaAlServer()">invia!</button>
-    <button id="chiudi"  style="margin-top:10px" onClick="chiudiLaConnessione()">chiudi</button>
+    <button id="login1" onClick="login()">Login</button>
+    <p id="et1">Messaggi in arrivo:</p>
+    <textarea id="ricezione" readonly></textarea>
+    <textarea id="messaggi" readonly></textarea>
+    <div id="stile">
+    <p id="et2" >Scrivi un messaggio:</p>
+    <input style="margin-top:30px" id="msg" type="text">
+    <button id="invio" style="margin-top:30px" onClick="inviaAlServer()">Invia un messaggio</button>
+    <button id="chiudi"  style="margin-top:10px" onClick="chiudiLaConnessione()">Chiudi la chat</button>
+    </div>
 </body>
 </html>
